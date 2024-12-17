@@ -12,7 +12,7 @@ fn main() {
                 vec.push(num.parse().unwrap());
             }
             // check if the list is ascending or descending
-            if check_ascending(&vec) || check_descending(&vec) {
+            if (check_ascending(&vec) || check_descending(&vec)) || safe_removing_one(&vec) {
                 ans += 1;
             }
             vec.clear();
@@ -30,32 +30,32 @@ where
 }
 
 fn check_ascending(vec: &Vec<i32>) -> bool {
-    let mut tolerance = 0;
-    let mut prev = vec[0];
     for i in 0..vec.len() - 1 {
         // make sure the difference is at least 1 and at most 3
         if vec[i + 1] <= vec[i] || (vec[i + 1] - vec[i] < 1 || vec[i + 1] - vec[i] > 3) {
-            if tolerance < 1 {
-                tolerance += 1;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
     true
 }
 
 fn check_descending(vec: &Vec<i32>) -> bool {
-    let mut tolerance = 0;
     for i in 0..vec.len() - 1 {
         // make sure the difference is at least 1 and at most 3
         if vec[i] <= vec[i + 1] || (vec[i] - vec[i + 1] < 1 || vec[i] - vec[i + 1] > 3) {
-            if tolerance < 1 {
-                tolerance += 1;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
     true
+}
+
+fn safe_removing_one(vec: &Vec<i32>) -> bool {
+    for i in 0..vec.len() {
+        let mut temp = vec.clone();
+        temp.remove(i);
+        if check_ascending(&temp) || check_descending(&temp) {
+            return true;
+        }
+    }
+    return false;
 }
